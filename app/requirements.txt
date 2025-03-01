@@ -3,7 +3,7 @@ langchain==0.0.123
 langchain-community==0.0.1
 langchain-groq==0.0.1
 pandas==1.5.3
-chromadb==0.1.2
+chromadb==0.5.0
 uuid==1.30
 python-dotenv==0.21.0
 re==2.2.1

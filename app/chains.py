@@ -12,7 +12,7 @@ class Chain:
     def __init__(self):
         self.llm = ChatGroq(
             groq_api_key=os.getenv('GROQ_API_KEY'),
-            model="llama3-8b-8192",
+            model=os.getenv('MODEL'),
             temperature=0.2,
         )
 
@@ -37,14 +37,14 @@ class Chain:
             raise OutputParserException("Context too big. Unable to parse jobs.")
         return res if isinstance(res, list) else [res]
 
-    def write_mail(self, job, links):
+    def write_mail(self, job, links,user_name):
         prompt_email = PromptTemplate.from_template(
         """
         ### JOB DESCRIPTION:
         {job_description}
         
         ### INSTRUCTION:
-        You are Dhirav, a business development executive at XYZ company. XYZ company is an AI & Software Consulting company dedicated to facilitating
+        You are {user_name}, a business development executive at XYZ company. XYZ company is an AI & Software Consulting company dedicated to facilitating
         the seamless integration of business processes through automated tools. 
         Over our experience, we have empowered numerous enterprises with tailored solutions, fostering scalability, 
         process optimization, cost reduction, and heightened overall efficiency. 
@@ -58,9 +58,10 @@ class Chain:
         """
         )
         chain_email = prompt_email | self.llm
-        res = chain_email.invoke({"job_description": str(job), "link_list": links})
+        res = chain_email.invoke({"job_description": str(job), "link_list": links, "user_name":user_name})
         return res.content
 
 
 if __name__ == "__main__":
     print(os.getenv('GROQ_API_KEY'))
+
